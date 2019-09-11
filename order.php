@@ -9,7 +9,7 @@ $flowId = 1234;
 // Собираем данные лида
 $clientName = $_POST['name']; // Вместо name - подставить имя поля для имени клиента в форме
 $clientPhone = $_POST['phone']; // Вместо phone - подставить имя поля для телефона клиента в форме
-$clientComment isset($_POST['comment']) ? $_POST['comment'] : null; // Комментарий к заказу
+$clientComment = isset($_POST['comment']) ? $_POST['comment'] : null; // Комментарий к заказу
 
 $clientReferer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null; // Получаем страницу откуда пришёл пользователь
 $clientUseragent = $_SERVER['HTTP_USER_AGENT']; // Получаем строку юзерагента пользователя
