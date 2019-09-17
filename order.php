@@ -1,6 +1,6 @@
 <?php
 include_once(__DIR__ . DIRECTORY_SEPARATOR . 'TD.php');
-include_once(__DIT__ . DIRECTORY_SEPARATOR . 'helpers.php');
+include_once(__DIR__ . DIRECTORY_SEPARATOR . 'helpers.php');
 
 $userId = 0;
 $apiKey = 'asfsa924.............fasf8902';
