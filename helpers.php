@@ -20,3 +20,13 @@ function getUserIP() {
         $ipaddress = '127.0.0.1';
     return $ipaddress;
 }
+
+function getUserCountryCode($ip)
+{
+    $data = file_get_contents('http://www.geoplugin.net/json.gp?ip=' . $ip);
+    $data = json_decode($data);
+    if (is_null($data) || !isset($data->geoplugin_countryCode)) {
+        return '';
+    }
+    return $data->geoplugin_countryCode;
+}
