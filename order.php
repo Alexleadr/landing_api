@@ -14,7 +14,7 @@ $clientComment = isset($_POST['comment']) ? $_POST['comment'] : null; // Ком�
 $clientReferer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null; // Получаем страницу откуда пришёл пользователь
 $clientUseragent = $_SERVER['HTTP_USER_AGENT']; // Получаем строку юзерагента пользователя
 $clientIp = getUserIP(); // Получаем IP клиента
-$clientGeo = file_get_contents('https://ipapi.co/' . $clientIp . '/country/');
+$clientGeo = getUserCountryCode($clientIp);
 
 // Дополнительные данные, тут в качестве примера мы будем считать, что доп данные вы передаёте через скрытые поля формы
 $subId1 = isset($_POST['sub_id_1']) ? $_POST['sub_id_1'] : null;
@@ -29,10 +29,10 @@ $utmMedium = isset($_POST['utm_medium']) ? $_POST['utm_medium'] : null;
 $utmContent = isset($_POST['utm_content']) ? $_POST['utm_content'] : null;
 $utmTerm = isset($_POST['utm_term']) ? $_POST['utm_term'] : null;
 
-$leadR = new TD($userId, $apiKey);
+$td = new TD($userId, $apiKey);
 
 /* Вернёт массив с прототипом данных для создания лида */
-$leadDataPrototype = $leadR->getLeadDataPrototype();
+$leadDataPrototype = $td->getLeadDataPrototype();
 
 $leadDataPrototype['geo'] = $clientGeo;
 $leadDataPrototype['ip'] = $clientIp;
@@ -55,14 +55,18 @@ $leadDataPrototype['utm_term'] = $utmTerm;
 
 /* Создаст лид в указанном потоке, вернёт id лида */
 try {
-    $newLeadId = $leadR->createLeadByFlow($flowId, $leadDataPrototype);
+    $newLeadId = $td->createLeadByFlow($flowId, $leadDataPrototype);
     // Тут у нас лид успешно создался и у нас есть его ид в $newLeadId
     // Вы можете тут добавить код для отправки лида в трекер или что-то еще
     
     header('Location: ./success.php?order=' . $newLeadId); // Перенаправление на сакцесс страницу
     exit;
 } catch (\Exception $e) {
-
+    file_put_contents(
+        __DIR__ . DIRECTORY_SEPARATOR . 'log.txt',
+        sprintf("[%s] Error: %s\n\tData: %s\n", date('Y-m-d H:i:s'), $e->getMessage(), print_r($leadDataPrototype, 1)),
+        FILE_APPEND
+    );
     // Произошла ощибка, сообщение об ошибке доступно в : $e->getMessage();
     header('Location: ./error.php'); // Перенаправление на сакцесс страницу
     exit;
